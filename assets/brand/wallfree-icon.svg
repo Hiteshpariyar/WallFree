@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="shell" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b3032"/>
+      <stop offset="1" stop-color="#15191c"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#29433f"/>
+      <stop offset="1" stop-color="#1c302f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="220" fill="url(#shell)"/>
+  <rect x="150" y="150" width="724" height="724" rx="176" fill="#e4edd8"/>
+  <rect x="210" y="210" width="604" height="604" rx="126" fill="url(#sky)"/>
+  <circle cx="666" cy="394" r="76" fill="#d6f078"/>
+  <path d="M210 650 C315 562 441 528 560 640 C650 544 733 526 814 585 L814 814 L210 814 Z" fill="#41685a"/>
+  <path d="M210 636 C304 613 380 659 451 814 L210 814 Z" fill="#c1e987"/>
+  <path d="M407 814 C510 686 647 636 814 681 L814 814 Z" fill="#83b96a"/>
+</svg>

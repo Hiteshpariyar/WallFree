@@ -20,6 +20,10 @@ Release installers are built automatically for both platforms when a version tag
 
 The app does not currently support live/video wallpapers, per-display image selection, or an online catalog.
 
+## App icon
+
+Wallfree uses an original landscape-in-a-frame mark created for this project. The design uses a dark rounded tile and a simple high-contrast silhouette; no pixels or logo artwork from the visual reference were reused. The editable vector source is `assets/brand/wallfree-icon.svg`.
+
 ## Build from source
 
 This is a Flutter desktop app. Install Flutter and enable desktop support for your target platform.

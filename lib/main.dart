@@ -280,16 +280,13 @@ class _Sidebar extends StatelessWidget {
                   ? MainAxisAlignment.center
                   : MainAxisAlignment.start,
               children: [
-                Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFC5F36B),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.wallpaper_rounded,
-                    color: Color(0xFF18200C),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'assets/brand/wallfree-icon.png',
+                    width: 38,
+                    height: 38,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 if (!compact) ...[

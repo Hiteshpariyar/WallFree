@@ -1,0 +1,87 @@
+name: Build desktop installers
+
+on:
+  push:
+    branches: [main, master]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    name: Build macOS DMG
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install Flutter packages
+        run: flutter pub get
+      - name: Build macOS app
+        run: flutter build macos --release
+      - name: Package DMG
+        run: |
+          mkdir -p dist
+          hdiutil create -volname Wallfree \
+            -srcfolder build/macos/Build/Products/Release/wallfree.app \
+            -ov -format UDZO dist/Wallfree-macOS.dmg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wallfree-macos
+          path: dist/Wallfree-macOS.dmg
+          if-no-files-found: error
+          retention-days: 30
+
+  windows:
+    name: Build Windows installer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install Flutter packages
+        run: flutter pub get
+      - name: Build Windows app
+        run: flutter build windows --release
+      - name: Install Inno Setup
+        run: choco install innosetup --yes --no-progress
+      - name: Package Windows installer
+        shell: pwsh
+        run: |
+          $versionLine = Select-String -Path pubspec.yaml -Pattern '^version:\s*(.+)$'
+          $version = $versionLine.Matches[0].Groups[1].Value.Split('+')[0].Trim()
+          New-Item -ItemType Directory -Force dist | Out-Null
+          $sourceDir = Join-Path $PWD 'build/windows/x64/runner/Release'
+          $compiler = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          & $compiler "/DAppVersion=$version" "/DSourceDir=$sourceDir" "/O$PWD\dist" windows/installer/wallfree.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wallfree-windows
+          path: dist/Wallfree-Windows-Setup-*.exe
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    name: Publish GitHub release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [macos, windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: release-assets/*
